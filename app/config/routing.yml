@@ -5,3 +5,8 @@ api:
 app:
     resource: '@AppBundle/Action/'
     type:     'annotation'
+
+contacto_id:
+    path: '/prueba'
+    defaults:
+        _controller: 'AppBundle:Contact:getById'

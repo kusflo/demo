@@ -2,13 +2,12 @@
     "name": "api-platform/api-platform",
     "license": "MIT",
     "type": "project",
-    "description": "The API Platform framework",
+    "description": "The API Platform demo IOT",
     "homepage": "https://api-platform.com",
     "authors": [
         {
-            "name": "Kévin Dunglas",
-            "email": "dunglas@gmail.com",
-            "homepage": "https://dunglas.fr"
+            "name": "Marcos Redondo",
+            "email": "kusflo@gmail.com"
         }
     ],
     "autoload": {
