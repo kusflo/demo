@@ -2,6 +2,8 @@
 
 use Symfony\Component\HttpFoundation\Request;
 
+//apcu_clear_cache ();
+
 /*
  * @var Composer\Autoload\ClassLoader
  */
