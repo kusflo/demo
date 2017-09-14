@@ -3506,16 +3506,16 @@
         },
         {
             "name": "nelmio/alice",
-            "version": "v3.0.0-RC.1",
+            "version": "v3.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nelmio/alice.git",
-                "reference": "8c7cc34a11888c7c96096164665b53b615e50cce"
+                "reference": "5c9e801856238ece1723b0b7488aae219e79f209"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nelmio/alice/zipball/8c7cc34a11888c7c96096164665b53b615e50cce",
-                "reference": "8c7cc34a11888c7c96096164665b53b615e50cce",
+                "url": "https://api.github.com/repos/nelmio/alice/zipball/5c9e801856238ece1723b0b7488aae219e79f209",
+                "reference": "5c9e801856238ece1723b0b7488aae219e79f209",
                 "shasum": ""
             },
             "require": {
@@ -3575,7 +3575,7 @@
                 "faker",
                 "test"
             ],
-            "time": "2017-06-28T23:22:17+00:00"
+            "time": "2017-09-12T22:14:56+00:00"
         },
         {
             "name": "psr/container",

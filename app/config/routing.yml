@@ -10,3 +10,11 @@ contacto_id:
     path: '/prueba'
     defaults:
         _controller: 'AppBundle:Contact:getById'
+
+#contacto_special:
+#    path: '/contacto/{id}/special'
+#    methods:  ['PUT']
+#    defaults:
+#        _controller: 'AppBundle:Contact:special'
+#        _api_resource_class: 'AppBundle\Entity\Contact'
+#        _api_item_operation_name: 'special'
