@@ -8,8 +8,6 @@ services:
         parent: 'api_platform.doctrine.orm.search_filter'
         arguments: [ { itemReviewed: 'exact' } ]
         tags: [ { name: 'api_platform.filter', id: 'review.search_filter' } ]
-    myservice:
-        class: AppBundle\Services\MyService
 
 #    service_name:
 #        class: AppBundle\Directory\ClassName

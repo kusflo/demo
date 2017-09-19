@@ -6,15 +6,21 @@ app:
     resource: '@AppBundle/Action/'
     type:     'annotation'
 
-contacto_id:
-    path: '/prueba'
+encuesta_add:
+    path: '/encuesta/add'
     defaults:
-        _controller: 'AppBundle:Contact:getById'
+        _controller: 'AppBundle:Encuesta:add'
 
-#contacto_special:
-#    path: '/contacto/{id}/special'
-#    methods:  ['PUT']
-#    defaults:
-#        _controller: 'AppBundle:Contact:special'
-#        _api_resource_class: 'AppBundle\Entity\Contact'
-#        _api_item_operation_name: 'special'
+encuesta_get:
+    path: '/encuesta/get/{id}'
+    defaults:
+        _controller: 'AppBundle:Encuesta:get'
+    requirements:
+        page: '\d+'
+
+encuestas_contacto:
+    path: '/encuestas/contacto/get/{id}'
+    defaults:
+        _controller: 'AppBundle:Encuesta:getEncuestasByContacto'
+    requirements:
+        page: '\d+'
