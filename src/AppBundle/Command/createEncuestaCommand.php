@@ -44,7 +44,7 @@ class createEncuestaCommand extends ContainerAwareCommand
         $encuesta->setDescripcion($txtDescription);
         $this->em->persist($encuesta);
         while(true) {
-            $question = new Question('Título de de la pregunta: ', '¿De que color es el mar?');
+            $question = new Question('Título de de la pregunta: (sin interrogantes) ', 'De que color es el mar');
             $txtPregunta = $helper->ask($input, $output, $question);
             while (true){
                 $question = new Question('Respuesta: ', 'rojo');

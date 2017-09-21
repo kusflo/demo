@@ -19,13 +19,13 @@ use Symfony\Component\HttpFoundation\Response;
 
 class EncuestaController extends Controller
 {
-    public function getByIdAction(Request $data){
+    public function getByIdAction(){
         $response = new Response(json_encode(array('name' => 'Marcos')));
         $response->headers->set('Content-Type', 'application/json');
         return $response;
     }
 
-    public function addAction(Request $data){
+    public function addAction(){
 
         /*Creamos una encuesta */
         $em = $this->getDoctrine()->getManager();
@@ -78,10 +78,10 @@ class EncuestaController extends Controller
 //        Objeto encuesta con hidratación de preguntas
 //        $preguntas = $encuesta->getPreguntas()->getValues();
 //        Objeto encuesta con hidratación de respuestas
-//        $preguntas = $encuesta->getPreguntas();
-//        $respuestas = $preguntas[0]->getRespuestas()->getValues();
+        $preguntas = $encuesta->getPreguntas();
+        $respuestas = $preguntas[0]->getRespuestas()->getValues();
         dump($encuesta);
-        return new Response('<html><body><h1>Prueba Ok</h1></body></html>');
+        return new Response('<html><body><h1>Ver objeto encuesta 1 en la diana de la barra inferior de depuración</h1></body></html>');
     }
 
 

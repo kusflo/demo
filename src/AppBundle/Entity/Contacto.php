@@ -8,7 +8,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Clase Contacto
  * @ORM\Entity
- * @ORM\Table(name="contactos")
+ * @ORM\Table(name="contactos",uniqueConstraints={@ORM\UniqueConstraint(name="uniqueContacto", columns={"name", "mail"})})
  */
 class Contacto
 {
@@ -125,5 +125,11 @@ class Contacto
     public function getDescription()
     {
         return $this->description;
+    }
+
+
+    public function __toString()
+    {
+        return 'id: ' . $this->getId() . ' ' . $this->getName();
     }
 }

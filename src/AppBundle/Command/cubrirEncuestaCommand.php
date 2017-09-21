@@ -69,7 +69,7 @@ class cubrirEncuestaCommand extends ContainerAwareCommand
         /**@var Pregunta $pregunta*/
         foreach($encuesta ->getPreguntas() as $pregunta) {
             $question = new ChoiceQuestion(
-                $pregunta->getTitulo(),
+                '¿ ' . $pregunta->getTitulo() . ' ?',
                 $pregunta->getRespuestas()->getValues()
             );
             $question->setErrorMessage('La Respuesta %s no existe');
