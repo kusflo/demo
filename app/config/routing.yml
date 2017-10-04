@@ -24,3 +24,38 @@ encuestas_contacto:
         _controller: 'AppBundle:Encuesta:getEncuestasByContacto'
     requirements:
         page: '\d+'
+
+
+report_get:
+    path: '/report/get'
+    defaults:
+        _controller: 'AppBundle:Report:getReport'
+
+grafico_get:
+    path: '/report/grafico/get'
+    defaults:
+        _controller: 'AppBundle:Report:getReportGrafico'
+
+
+excel_get:
+    path: '/excel/encuesta/get'
+    defaults:
+        _controller: 'AppBundle:Excel:getEncuesta'
+
+
+excel_set:
+    path: '/excel/encuesta/set'
+    defaults:
+        _controller: 'AppBundle:Excel:setEncuesta'
+
+excel_set_masiva:
+    path: '/excel/encuesta/masiva'
+    defaults:
+        _controller: 'AppBundle:Excel:setEncuestaMasiva'
+
+excel_set_load_file:
+    path: '/excel/encuesta/masiva/file'
+    defaults:
+        _controller: 'AppBundle:Excel:setEncuestaMasivaFileLoad'
+
+

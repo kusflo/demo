@@ -14,6 +14,7 @@ use AppBundle\Entity\Respuesta;
 use AppBundle\Services\GenerateExcelOfContactoRespuestas;
 use AppBundle\Services\ReaderExcelOfFile;
 use Doctrine\Common\Persistence\ObjectRepository;
+use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Repository\RepositoryFactory;
 use PHPExcel;
@@ -34,13 +35,13 @@ class ExcelController extends Controller
 
     public function getEncuestaAction(){
 
+        ini_set('memory_limit','512M');
         $repoContactoRespuestas = $this->getDoctrine()->getRepository(ContactoRespuesta::class);
         $contactoRespuestas = $repoContactoRespuestas->findAll();
         $objPHPExcel = new PHPExcel();
         $obj = new GenerateExcelOfContactoRespuestas($objPHPExcel, $contactoRespuestas);
-        $objPHPExcel = $obj->getObjPHPExcel();
 
-        return $this->generateOutputExcel($objPHPExcel);
+        return $this->generateOutputExcel($obj->getObjPHPExcel());
 
     }
 
@@ -54,6 +55,34 @@ class ExcelController extends Controller
                 <p>Excel situado en api/src/Resources/excel/encuesta.xls</p>
                 <p>Ver los datos en la diana situada en la barra inferior de depuración</p>
                 </body></html>');
+    }
+
+
+    public function setEncuestaMasivaFileLoadAction(){
+        $paths [] = __DIR__ . '/../Resources/excel/encuesta_masiva.xls';
+        $paths [] = __DIR__ . '/../Resources/excel/encuesta_masiva_2.xls';
+        $paths [] = __DIR__ . '/../Resources/excel/encuesta_masiva_3.xls';
+        $paths [] = __DIR__ . '/../Resources/excel/encuesta_masiva_4.xls';
+        $paths [] = __DIR__ . '/../Resources/excel/encuesta_masiva_5.xls';
+
+//        $tableName = $this->getTableName("temp_encuesta_masiva");
+
+        $this->createTable();
+        foreach($paths as $file){
+//            $this->transformXlsToCsv($file);
+            $path = substr($file, 0, -3) . 'csv';
+            $this->updateCsvInTemporalTable($path);
+        }
+        $this->processDataAndDeleteTable();
+
+        return new Response('<html><body>
+                <h1>Datos transformados de excel a csv, importados a una tabla temporal y tratados mediante procedimientos almacenados.</h1>
+                <p>Transformamos datos de excel a csv.</p>
+                <p>Aplicamos Load data infile para importar los datos a una tabla temporal.</p>
+                <p>Ejecutamos procedimientos almacenados para procesar los datos.</p>
+                <p>Limpiamos la tabla temporal.</p>
+                </body></html>');
+
     }
 
     public function setEncuestaMasivaAction(){
@@ -112,18 +141,24 @@ class ExcelController extends Controller
 
     private function generateOutputExcel($objPHPExcel)
     {
-        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
-        ob_start();
-        $objWriter->save('php://output');
+        try {
+            $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+            ob_start();
+            $objWriter->save('php://output');
 
-        return new Response(
-            ob_get_clean(),  // read from output buffer
-            200,
-            array(
-                'Content-Type' => 'application/vnd.ms-excel',
-                'Content-Disposition' => 'attachment; filename="encuesta.xls"',
-            )
-        );
+            return new Response(
+                ob_get_clean(),  // read from output buffer
+                200,
+                array(
+                    'Content-Type' => 'application/vnd.ms-excel',
+                    'Content-Disposition' => 'attachment; filename="encuesta.xls"',
+                )
+            );
+
+        } catch (\Exception $e){
+            echo $e->getMessage();
+            die();
+        }
     }
 
     /**
@@ -160,6 +195,73 @@ class ExcelController extends Controller
         $this->repoEncuesta = $this->getDoctrine()->getRepository(Encuesta::class);
         $this->repoPregunta = $this->getDoctrine()->getRepository(Pregunta::class);
         $this->repoRespuesta = $this->getDoctrine()->getRepository(Respuesta::class);
+    }
+
+    /**
+     * @param $file
+     */
+    private function transformXlsToCsv($file)
+    {
+        $objReader = PHPExcel_IOFactory::createReader('Excel5');
+        $objPHPExcel = $objReader->load($file);
+        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'CSV');
+        $objWriter->save(str_replace('.xls', '.csv', $file));
+    }
+
+    /**
+     * @param $path
+     */
+    private function updateCsvInTemporalTable($path)
+    {
+        try {
+            /**@var Connection $conn */
+            $conn = $this->get('database_connection');
+            /*Load data no se puede incluir en un procedimiento almacenado por eso ejecutamos desde php*/
+            $sql = "LOAD DATA LOCAL INFILE '" . $path . "' INTO TABLE temp_encuesta_masiva "
+                . "FIELDS TERMINATED BY ',' "
+                . "ENCLOSED BY '\"' "
+                . "LINES TERMINATED BY '\n' IGNORE 1 LINES";
+            $conn->executeQuery($sql);
+        } catch(\Exception $e){
+            echo $e->getMessage();
+        }
+
+    }
+
+    private function getTableName($string)
+    {
+        return $string . '_' . hash('md5', random_int(1, 1000));
+    }
+
+    private function createTable()
+    {
+        try {
+            /**@var Connection $conn */
+            $conn = $this->get('database_connection');
+            $sql = "CREATE TABLE temp_encuesta_masiva ( "
+            . "Contacto VARCHAR(255) NULL DEFAULT NULL, "
+            . "Mail VARCHAR(255) NULL DEFAULT NULL, "
+            . "Encuesta VARCHAR(255) NULL DEFAULT NULL, "
+            . "Pregunta VARCHAR(255) NULL DEFAULT NULL, "
+            . "Respuesta VARCHAR(255) NULL DEFAULT NULL)";
+
+
+            $conn->executeQuery($sql);
+        } catch(\Exception $e){
+            echo $e->getMessage();
+        }
+    }
+
+    private function processDataAndDeleteTable()
+    {
+        try {
+            /**@var Connection $conn */
+            $conn = $this->get('database_connection');
+            $sql = "CALL AdminImportEncuestas;";
+            $conn->executeQuery($sql);
+        } catch(\Exception $e){
+            echo $e->getMessage();
+        }
     }
 
 
